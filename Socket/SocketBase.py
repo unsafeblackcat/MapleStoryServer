@@ -35,7 +35,7 @@ class SocketBase():
             if iret:
                 return
 
-            await self._write(self, addr, output_data)
+            await self._write(addr, writer, output_data)
             output_data.clear()
  
             while True:
@@ -49,12 +49,14 @@ class SocketBase():
   
                 output_data = bytearray()
                 await self.socket_callback(addr, input_data, output_data)
-                await self._write(self, addr, output_data)
+                await self._write(addr, writer, output_data)
                 output_data.clear()
                 pass
   
         except asyncio.CancelledError:
             print(f"Connection with {addr} was cancelled.")
+        except ConnectionResetError as e:
+            print(f"Connection with {addr} was cancelled. {e}")
         finally:
             writer.close()
             await writer.wait_closed()
@@ -66,9 +68,13 @@ class SocketBase():
         except asyncio.TimeoutError:
             print(f"Connection from {addr} timed out.") 
             return None 
+        except ConnectionResetError as e: 
+            raise ConnectionResetError(e)
+        except asyncio.CancelledError as e:
+            raise asyncio.CancelledError(e)
         except Exception as e:
             print(f"Error with client {addr}: {e}")
-            return None
+            return None 
  
         await self._decode(input_data)
         return input_data
@@ -81,7 +87,7 @@ class SocketBase():
         if len(output_data) == 0:
             return
 
-        await self._encode(output_data)
+        #await self._encode(output_data)
         writer.write(output_data)
         await writer.drain()  # 确保数据已发送
         return
