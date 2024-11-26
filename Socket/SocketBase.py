@@ -27,6 +27,7 @@ class SocketBase():
         addr:tuple = writer.get_extra_info('peername') 
         sock = writer.get_extra_info("socket")
 
+        print(f"Connection with {addr} was cancelled.")
           
         try:
             output_data = bytearray()
@@ -35,11 +36,13 @@ class SocketBase():
             output_data.clear()
  
             while True:
-                # 从客户端读取数据
+                # 从客户端读取数据 
                 input_data = await self._read(self, reader)
-
-                if writer.is_closing():
+                if reader.at_eof():
+                    print(f'{addr} close')
                     break
+
+                print(input_data)
   
                 output_data = bytearray()
                 await self.socket_callback(addr, input_data, output_data)
@@ -53,16 +56,19 @@ class SocketBase():
             writer.close()
             await writer.wait_closed()
 
-    async def _read(self, addr:tuple, reader:asyncio.StreamReader) -> bytes:
+    async def _read(self, addr:tuple, reader:asyncio.StreamReader) -> int:
         
         try:
-            input_data:bytes = await asyncio.wait_for(reader.read(), timeout=self.m_time_out)
+            input_data:bytes = await asyncio.wait_for(reader.read(1024), timeout=self.m_time_out)
         except asyncio.TimeoutError:
             print(f"Connection from {addr} timed out.") 
             return None 
+        except Exception as e:
+            print(f"Error with client {addr}: {e}")
+            return None
  
         await self._decode(input_data)
-        return input_data, 0
+        return input_data
     
     async def _write(self, addr:tuple, writer:asyncio.StreamWriter, output_data:bytearray = None):
         
