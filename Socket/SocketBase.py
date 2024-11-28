@@ -1,7 +1,12 @@
 import asyncio
 
 class SocketBase():  
-    def __init__(self, ip:str, port:int, time_out:int = 30):
+    def __init__(
+            self
+            , ip:str
+            , port:int
+            , time_out:int = 30):
+        
         self.m_ip = ip
         self.m_port = port
         self.m_server = None
@@ -23,16 +28,19 @@ class SocketBase():
         return iret
          
 
-    async def _socket_callback(self, reader:asyncio.StreamReader, writer:asyncio.StreamWriter):
+    async def _socket_callback(
+            self
+            , reader:asyncio.StreamReader
+            , writer:asyncio.StreamWriter):
+        
         addr:tuple = writer.get_extra_info('peername') 
         sock = writer.get_extra_info("socket")
 
         print(f"Connection with {addr} was cancelled.")
           
         try:
-            output_data = bytearray()
-            iret = await self.socket_connect(addr, output_data)
-            if iret:
+            output_data = bytearray() 
+            if await self.socket_connect(addr, output_data):
                 return
 
             await self._write(addr, writer, output_data)
@@ -61,7 +69,10 @@ class SocketBase():
             writer.close()
             await writer.wait_closed()
 
-    async def _read(self, addr:tuple, reader:asyncio.StreamReader) -> int:
+    async def _read(
+            self
+            , addr:tuple
+            , reader:asyncio.StreamReader) -> int:
         
         try:
             input_data:bytes = await asyncio.wait_for(reader.read(1024), timeout=self.m_time_out)
@@ -79,7 +90,11 @@ class SocketBase():
         await self._decode(input_data)
         return input_data
     
-    async def _write(self, addr:tuple, writer:asyncio.StreamWriter, output_data:bytearray = None):
+    async def _write(
+            self
+            , addr:tuple
+            , writer:asyncio.StreamWriter
+            , output_data:bytearray = None):
         
         if output_data == None:
             return
@@ -98,7 +113,10 @@ class SocketBase():
     async def _encode(self, output_data:bytearray):
         return
 
-    async def socket_connect(self, addr:tuple, output_data:bytearray) -> int:
+    async def socket_connect(
+            self
+            , addr:tuple
+            , output_data:bytearray) -> int:
         '''
             当客户端建立连接请求时会进入此回调
 
@@ -111,7 +129,11 @@ class SocketBase():
         '''
         return 0
 
-    async def socket_callback(self, addr:tuple, input_data:bytes, output_data:bytearray) -> int:
+    async def socket_callback(
+            self
+            , addr:tuple
+            , input_data:bytes
+            , output_data:bytearray) -> int:
         '''
             当收到客户端数据包时会进入此回调
 

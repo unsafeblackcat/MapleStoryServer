@@ -12,6 +12,11 @@ def tcp_client():
             client_socket.connect((host, port))
             print(f"Connected to {host}:{port}")
 
+
+            bytess = client_socket.recv(1024)
+
+            print(list(bytess))
+
             # 等待 30 秒
             print("Waiting 30 seconds...")
             time.sleep(30)

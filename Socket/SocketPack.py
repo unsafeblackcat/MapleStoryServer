@@ -6,20 +6,23 @@ class SocketPack:
         pass
 
     def write_byte(self, value):
-        self.m_packet.extend(struct.pack('>B', value))
+        self.m_packet.extend(struct.pack('<B', value))
         return
     
     def write_short(self, value):
-        self.m_packet.extend(struct.pack('>H', value))
+        self.m_packet.extend(struct.pack('<H', value))
         return
     
     def write_int(self, value):
-        self.m_packet.extend(struct.pack('>I', value))
+        self.m_packet.extend(struct.pack('<I', value))
         return
     
     def write_bytes(self, value):
         self.m_packet.extend(struct.pack(f"{len(value)}s", value))
         return
     
+    def to_bytearray(self) -> bytearray:
+        return bytearray(self.m_packet)
+
     def print(self):
         print(list(self.m_packet))
