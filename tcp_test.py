@@ -16,6 +16,9 @@ def tcp_client():
             bytess = client_socket.recv(1024)
 
             print(list(bytess))
+ 
+            message1 = "12345678"
+            client_socket.sendall(message1.encode())
 
             # 等待 30 秒
             print("Waiting 30 seconds...")
