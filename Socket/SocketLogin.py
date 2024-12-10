@@ -1,4 +1,5 @@
 import os    
+import asyncio
 from Socket.SocketBase import SocketBase
 from Socket.SocketPack import SocketPack
 from Socket.SocketMessage import SocketMessage
@@ -11,8 +12,7 @@ class SocketLogin(SocketBase):
             self
             , ip:str
             , port:int
-            , time_out:int = 30):
-        
+            , time_out:int = 30): 
         super().__init__(ip, port, time_out)
         pass
  
@@ -39,8 +39,7 @@ class SocketLogin(SocketBase):
         inpack.write_byte(49)
         inpack.write_bytes(ivrecv)
         inpack.write_bytes(ivsend)
-        inpack.write_byte(8)
-    
+        inpack.write_byte(8) 
         await message.write_pack(inpack)  
         return 0
 
@@ -51,14 +50,18 @@ class SocketLogin(SocketBase):
             socket消息循环, 当函数返回时表明可以关闭socket  
         '''
 
-        while True:
-            bytes_data = await message.read_pack(4)
-
-            print(list(bytes_data))
-
-            header = int.from_bytes(bytes_data, byteorder='little')
+        try: 
+            while True:
+                head = await message.read_int()
+                
+                pass
+             
+        except asyncio.CancelledError:
+            print(f"Connection with {self.m_ip} was cancelled.")
+        except ConnectionResetError as e:
+            print(f"Connection with {self.m_ip} was cancelled. {e}")
+        finally:
             pass
-
-
+        
         return
     

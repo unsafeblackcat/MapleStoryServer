@@ -34,6 +34,10 @@ class SocketMessage():
   
         return input_data
     
+    async def read_int(self) -> int:
+        value =  await self.read_pack(4)
+        return int.from_bytes(value, byteorder='big')
+    
     async def write_pack(self
                          , output_data:SocketPack = None):
         '''

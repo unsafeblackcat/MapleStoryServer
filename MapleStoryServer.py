@@ -51,7 +51,8 @@ def main(argc, argv):
     
     return 0
  
-#debian apt -y install python3-pycryptodome
-#windows pip install pycryptodome
+# debian apt -y install python3-pycryptodome
+# windows pip install pycryptodome
+# pip install mysql-connector-python
 if __name__ == "__main__":
     main(len(sys.argv), sys.argv)
