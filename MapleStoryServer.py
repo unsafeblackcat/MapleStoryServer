@@ -57,6 +57,5 @@ def main(argc, argv):
 # debian apt -y install python3-pycryptodome
 # windows pip install pycryptodome
 # pip install mysql-connector-python
-# pip3 install numpy
 if __name__ == "__main__":
     main(len(sys.argv), sys.argv)

@@ -1,4 +1,5 @@
 import asyncio
+import ctypes
 from Socket.SocketMessage import SocketMessage
 
 class SocketBase():  
@@ -81,4 +82,9 @@ class SocketBase():
             socket 关闭后用于清理数据
         '''
         return
+    
+    def decode_packet_length(self, header:int) -> int:
+        length:int = (ctypes.c_uint32(header).value >> 16) ^ (header & 0xFFFF)
+        length = (ctypes.c_uint32(length << 8).value & 0xFF00) | (ctypes.c_uint32(length >> 8).value & 0xFF)
+        return length
  
