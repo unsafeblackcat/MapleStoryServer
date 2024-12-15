@@ -23,7 +23,7 @@ class SocketMessage():
         try:
             input_data:bytes = await asyncio.wait_for(self.m_reader.read(read_len), timeout=self.m_time_out)
         except asyncio.TimeoutError:
-            return None 
+            raise asyncio.TimeoutError(e)
         except ConnectionResetError as e: 
             raise ConnectionResetError(e)
         except asyncio.CancelledError as e:

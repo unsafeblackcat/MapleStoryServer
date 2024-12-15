@@ -9,6 +9,7 @@ from Socket.MapleAESOFB import MapleAESOFB
 from PublicFun import generateSend
 from PublicFun import generateReceive
 from PublicFun import MAPLESTORY_SERVER_VERSION 
+from Socket.MapleCustomEncryption import *
 
 class SocketLogin(SocketBase): 
     def __init__(
@@ -60,8 +61,11 @@ class SocketLogin(SocketBase):
             self
             , message:SocketMessage) -> int:
        
-        header = await message.read_int()
- 
+        try:
+            header = await message.read_int()
+        except asyncio.TimeoutError: 
+            pass
+
         loop = asyncio.get_running_loop()
         bret:bool = await loop.run_in_executor(
             None
@@ -83,6 +87,11 @@ class SocketLogin(SocketBase):
             None
             , self.m_receive.crypt
             , array_packet) 
-
+         
+        array_packet = await loop.run_in_executor(
+            None
+            , MapleCustomEncryption.decryptData
+            , array_packet)  
         i = 0
+
         return

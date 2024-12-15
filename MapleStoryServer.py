@@ -25,9 +25,9 @@ async def socket_wait():
             , socket_channel.m_server.serve_forever())
 
     pass
- 
+
 def main(argc, argv):   
-    
+
     maplestory_config = MapleStoryConfig(os.getcwd() + '/Resources/config/')
     maplestroy_db = MapleStroyDB(
         maplestory_config.m_database.m_dbUrl
