@@ -124,5 +124,42 @@ class SocketLogin(SocketBase):
                 pass # if handle.validate_state():
             pass # if EnumLoginOpCode.__contains__(array_packet[0]):
 
+
+
+
+        header = await message.read_int()
+ 
+        loop = asyncio.get_running_loop()
+        bret:bool = await loop.run_in_executor(
+            None
+            , self.m_receive.is_valid_header
+            , header) 
+        if  bret == False:
+            print(f"login: {self.m_ip} is_valid_header false")
+            pass
+
+        packet_length:int = await loop.run_in_executor(
+            None
+            , self.decode_packet_length
+            , header)
         
+        packet = await message.read_pack(packet_length)
+        array_packet:array = array.array('b', packet)
+  
+        await loop.run_in_executor(
+            None
+            , self.m_receive.crypt
+            , array_packet) 
+         
+        array_packet = await loop.run_in_executor(
+            None
+            , MapleCustomEncryption.decryptData
+            , array_packet)   
+
+        if EnumLoginOpCode.__contains__(array_packet[0]):
+            handle:PacketHandler = await self.m_process_handle.get(array_packet[0])
+            if await handle.validate_state():
+                await handle.handle_packet(message)
+                pass # if handle.validate_state():
+            pass # if EnumLoginOpCode.__contains__(array_packet[0]):
         return

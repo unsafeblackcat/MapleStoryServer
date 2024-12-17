@@ -10,5 +10,5 @@ class PackProcess():
         self.m_handle[id] = handle
         return
     
-    def get(self, id:EnumLoginOpCode) -> PacketHandler:
-        return self.m_handle[id]
+    async def get(self, id:EnumLoginOpCode) -> PacketHandler: 
+        return self.m_handle.get(EnumLoginOpCode(id))

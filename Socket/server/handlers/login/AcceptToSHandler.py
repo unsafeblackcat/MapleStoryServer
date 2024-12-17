@@ -5,8 +5,8 @@ class AcceptToSHandler(PacketHandler):
         super().__init__()
         return
     
-    def handle_packet(self, message):
+    async def handle_packet(self, message):
         return super().handle_packet(message)
     
-    def validate_state(self):
+    async def validate_state(self):
         return super().validate_state()

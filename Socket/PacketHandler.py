@@ -5,8 +5,8 @@ class PacketHandler:
     def __init__(self):
         pass
  
-    def handle_packet(self, message:SocketMessage):
+    async def handle_packet(self, message:SocketMessage):
         pass
 
-    def validate_state(self) -> bool:
+    async def validate_state(self) -> bool:
         pass
