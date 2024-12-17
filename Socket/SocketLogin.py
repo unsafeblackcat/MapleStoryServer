@@ -5,7 +5,12 @@ import array
 from Socket.SocketBase import SocketBase
 from Socket.SocketPack import SocketPack
 from Socket.SocketMessage import SocketMessage
+from Socket.PacketHandler import PacketHandler
 from Socket.MapleAESOFB import MapleAESOFB
+from Socket.server.PackProcess import PackProcess
+from Socket.opcodes.LoginOpcode import EnumLoginOpCode
+from Socket.server.handlers.login.AcceptToSHandler import AcceptToSHandler
+
 from PublicFun import generateSend
 from PublicFun import generateReceive
 from PublicFun import MAPLESTORY_SERVER_VERSION 
@@ -23,6 +28,28 @@ class SocketLogin(SocketBase):
         self.m_iv_recv = list()
         self.m_sender:MapleAESOFB
         self.m_receive:MapleAESOFB
+        self.m_process_handle:PackProcess = PackProcess()
+        self.m_process_handle.register_handle(EnumLoginOpCode.ACCEPT_TOS, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.AFTER_LOGIN, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.SERVERLIST_REREQUEST, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHARLIST_REQUEST, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.LOGIN_PASSWORD, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.RELOG, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.SERVERLIST_REQUEST, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.SERVERSTATUS_REQUEST, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHECK_CHAR_NAME, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CREATE_CHAR, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.DELETE_CHAR, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_CHAR, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.PICK_ALL_CHAR, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.REGISTER_PIN, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.GUEST_LOGIN, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.REGISTER_PIC, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT_WITH_PIC, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.SET_GENDER, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_WITH_PIC, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_PIC_REGISTER, AcceptToSHandler())
 
         pass
  
@@ -60,12 +87,9 @@ class SocketLogin(SocketBase):
     async def socket_loop(
             self
             , message:SocketMessage) -> int:
-       
-        try:
-            header = await message.read_int()
-        except asyncio.TimeoutError: 
-            pass
-
+ 
+        header = await message.read_int()
+ 
         loop = asyncio.get_running_loop()
         bret:bool = await loop.run_in_executor(
             None
@@ -91,7 +115,14 @@ class SocketLogin(SocketBase):
         array_packet = await loop.run_in_executor(
             None
             , MapleCustomEncryption.decryptData
-            , array_packet)  
-        i = 0
+            , array_packet)   
 
+        if EnumLoginOpCode.__contains__(array_packet[0]):
+            handle:PacketHandler = self.m_process_handle.get(array_packet[0])
+            if handle.validate_state():
+                handle.handle_packet(message)
+                pass # if handle.validate_state():
+            pass # if EnumLoginOpCode.__contains__(array_packet[0]):
+
+        
         return
