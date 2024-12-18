@@ -1,7 +1,10 @@
 import asyncio
-import ctypes
+import ctypes 
 import array
+
+from datetime import datetime
 from Socket.SocketMessage import SocketMessage
+from Socket.SocketPack import SocketPack
 
 class SocketBase():  
     def __init__(
@@ -42,9 +45,30 @@ class SocketBase():
         try: 
             if await self.socket_connect(message):
                 return
- 
-            await self.socket_loop(message) 
-   
+            
+            currentime:int = 0
+            header:int = 0
+            is_time_out:bool = False
+            
+            while (True):
+                try:
+                    opcode_buffer:array = await message.read_header()
+                    await self.opcode_process(opcode_buffer, message) 
+                except asyncio.TimeoutError as e:
+                    if is_time_out:
+                        raise asyncio.TimeoutError(e)
+                    else:
+                        currentime = int(datetime.now().timestamp() * 1000) 
+                        inpack = SocketPack() 
+                        inpack.write_short(0x11)
+                        await message.write_pack(inpack) 
+                        is_time_out = True 
+                        continue
+                    pass # except asyncio.TimeoutError as e:
+                pass # while (True):
+               
+        except asyncio.TimeoutError as e:
+            print(f"Connection with {addr} was cancelled.")
         except asyncio.CancelledError:
             print(f"Connection with {addr} was cancelled.")
         except ConnectionResetError as e:
@@ -68,8 +92,9 @@ class SocketBase():
         '''
         return 0
 
-    async def socket_loop(
+    async def opcode_process(
             self
+            , opcode_buffer:array
             , message:SocketMessage) -> int:
         '''
             socket消息循环, 当函数返回时表明可以关闭socket  
@@ -82,9 +107,4 @@ class SocketBase():
         '''
             socket 关闭后用于清理数据
         '''
-        return
-    
-    def decode_packet_length(self, header:int) -> int:
-        length:int = (ctypes.c_uint32(header).value >> 16) ^ (header & 0xFFFF)
-        length = (ctypes.c_uint32(length << 8).value & 0xFF00) | (ctypes.c_uint32(length >> 8).value & 0xFF)
-        return length 
+        return 
