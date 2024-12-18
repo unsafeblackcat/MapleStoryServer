@@ -47,7 +47,6 @@ class SocketBase():
                 return
             
             currentime:int = 0
-            header:int = 0
             is_time_out:bool = False
             
             while (True):
@@ -67,6 +66,8 @@ class SocketBase():
                     pass # except asyncio.TimeoutError as e:
                 pass # while (True):
                
+        except asyncio.IncompleteReadError as e:
+            print(f"{addr}: 读取数据None, Socket异常客户端可能断开....")
         except asyncio.TimeoutError as e:
             print(f"Connection with {addr} was cancelled.")
         except asyncio.CancelledError:

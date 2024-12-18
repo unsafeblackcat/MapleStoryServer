@@ -48,15 +48,14 @@ class SocketMessage():
         '''
         try:
             input_data:bytes = await asyncio.wait_for(self.m_reader.read(read_len), timeout=self.m_time_out)
+            if len(input_data) == 0:
+                raise asyncio.IncompleteReadError("", 0)
         except asyncio.TimeoutError as e:
             raise asyncio.TimeoutError(e)
         except ConnectionResetError as e: 
             raise ConnectionResetError(e)
         except asyncio.CancelledError as e:
             raise asyncio.CancelledError(e)
-        except Exception as e:
-            print(f"Error with client {e}")
-            return None 
   
         return input_data
     
