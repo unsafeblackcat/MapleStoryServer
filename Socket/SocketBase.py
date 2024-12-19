@@ -66,8 +66,8 @@ class SocketBase():
                     pass # except asyncio.TimeoutError as e:
                 pass # while (True):
                
-        except asyncio.IncompleteReadError as e:
-            print(f"{addr}: 读取数据None, Socket异常客户端可能断开....")
+        except asyncio.InvalidStateError as e:
+            print(f"{addr}: {e}")
         except asyncio.TimeoutError as e:
             print(f"Connection with {addr} was cancelled.")
         except asyncio.CancelledError:
@@ -98,7 +98,9 @@ class SocketBase():
             , opcode_buffer:array
             , message:SocketMessage) -> int:
         '''
-            socket消息循环, 当函数返回时表明可以关闭socket  
+            opcode消息过程
+            opcode_buffer: socket接受解码后的数据  
+            message: 和客户端通讯类
         '''
         return
     

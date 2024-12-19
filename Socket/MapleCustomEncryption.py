@@ -82,3 +82,8 @@ class MapleCustomEncryption:
         tmp2 = ctypes.c_uint(tmp2).value >> 8
 
         return ctypes.c_byte(tmp | tmp2).value
+    
+
+
+    def encryptData(data:list):
+        return

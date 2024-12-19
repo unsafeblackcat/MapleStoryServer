@@ -47,9 +47,9 @@ class SocketMessage():
             read_len: 读取socket包长度
         '''
         try:
-            input_data:bytes = await asyncio.wait_for(self.m_reader.read(read_len), timeout=self.m_time_out)
-            if len(input_data) == 0:
-                raise asyncio.IncompleteReadError("", 0)
+            recv_data:bytes = await asyncio.wait_for(self.m_reader.read(read_len), timeout=self.m_time_out)
+            if len(recv_data) == 0:
+                raise asyncio.InvalidStateError("读取数据None, Socket异常客户端可能断开....")
         except asyncio.TimeoutError as e:
             raise asyncio.TimeoutError(e)
         except ConnectionResetError as e: 
@@ -57,11 +57,11 @@ class SocketMessage():
         except asyncio.CancelledError as e:
             raise asyncio.CancelledError(e)
   
-        return input_data
+        return recv_data
     
     async def read_header(self) -> array:
-        header = await self.read_pack(4)
-        header = int.from_bytes(header, byteorder='big')
+        recv_data:bytes = await self.read_pack(4)
+        header:int = int.from_bytes(recv_data, byteorder='big')
  
         loop = asyncio.get_running_loop()
 
@@ -73,10 +73,7 @@ class SocketMessage():
             print(f"login: {self.m_ip} is_valid_header false")
             pass
 
-        packet_length:int = await loop.run_in_executor(
-            None
-            , self.decode_packet_length
-            , header)
+        packet_length:int = await self.decode_packet_length(header)
         
         packet = await self.read_pack(packet_length)
         array_packet:array = array.array('b', packet)
@@ -94,27 +91,43 @@ class SocketMessage():
         return array_packet
     
     async def write_pack(self
-                         , output_data:SocketPack = None
+                         , socket_pack:SocketPack = None
                          , encode:bool = True):
         '''
             向socket发送数据包
         '''
 
-        if output_data == None:
+        if socket_pack == None:
             return
         
-        if len(output_data.m_packet) == 0:
+        if len(socket_pack.m_packet) == 0:
             return
         
         if encode:
-            
+            await self.encode(socket_pack)
             pass
         
-        self.m_writer.write(output_data.to_bytearray())
+        self.m_writer.write(socket_pack.to_bytearray())
         await self.m_writer.drain()  # 确保数据已发送
 
      
-    def decode_packet_length(self, header:int) -> int:
+    async def decode_packet_length(self, header:int) -> int:
         length:int = (ctypes.c_uint32(header).value >> 16) ^ (header & 0xFFFF)
         length = (ctypes.c_uint32(length << 8).value & 0xFF00) | (ctypes.c_uint32(length >> 8).value & 0xFF)
         return length 
+    
+    async def encode(self, socket_pack:SocketPack):
+        
+        loop = asyncio.get_running_loop()
+
+        packet:array = await loop.run_in_executor(
+            None
+            , self.m_sender.getPacketHeader
+            , len(socket_pack)) 
+
+        array_packet = await loop.run_in_executor(
+            None
+            , MapleCustomEncryption.encryptData
+            , list(socket_pack.m_packet))   
+
+        return

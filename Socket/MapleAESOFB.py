@@ -195,3 +195,17 @@ ctypes.c_byte(0x3D).value, ctypes.c_byte(0xCA).value, ctypes.c_byte(0xF4).value,
         in_list[2] = ctypes.c_byte((ret_value >> 16) & 0xFF).value 
         in_list[3] = ctypes.c_byte((ret_value >> 24) & 0xFF).value
         return in_list
+    
+    def getPacketHeader(self, length:int) -> array:
+        iiv:int = self.m_iv[3] & 0xFF
+        iiv = iiv | ((self.m_iv[2] << 8) & 0xFF00)
+        iiv = iiv ^ self.m_maple_version
+
+        mlength:int = ((length << 8) & 0xFF00) | ctypes.c_uint(ctypes.c_uint(length).value >> 8).value
+        xoredIv = iiv ^ mlength
+        ret_array = array.array('b')
+        ret_array.append(ctypes.c_byte((iiv >> 8) & 0xFF).value)
+        ret_array.append(ctypes.c_byte(iiv & 0xFF).value)
+        ret_array.append(ctypes.c_byte((xoredIv >> 8) & 0xFF).value)
+        ret_array.append(ctypes.c_byte(xoredIv & 0xFF).value) 
+        return ret_array
