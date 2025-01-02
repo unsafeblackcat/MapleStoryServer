@@ -1,5 +1,8 @@
 from enum import Enum
 
+class EnumGlobal(Enum):
+    PONG = 0x18
+
 class EnumLoginOpCode(Enum):
     ACCEPT_TOS = 0x7
     AFTER_LOGIN = 0x9

@@ -103,11 +103,14 @@ class SocketMessage():
         if len(socket_pack.m_packet) == 0:
             return
         
+        send_array = bytearray()
         if encode:
-            await self.encode(socket_pack)
+            send_array = await self.encode(socket_pack)
             pass
+        else:
+            send_array = socket_pack.to_bytearray()
         
-        self.m_writer.write(socket_pack.to_bytearray())
+        self.m_writer.write(send_array)
         await self.m_writer.drain()  # 确保数据已发送
 
      
@@ -116,18 +119,26 @@ class SocketMessage():
         length = (ctypes.c_uint32(length << 8).value & 0xFF00) | (ctypes.c_uint32(length >> 8).value & 0xFF)
         return length 
     
-    async def encode(self, socket_pack:SocketPack):
+    async def encode(self, socket_pack:SocketPack) -> bytearray:
         
         loop = asyncio.get_running_loop()
 
-        packet:array = await loop.run_in_executor(
+        encode_pack:SocketPack = SocketPack()
+
+        packet_head:array = await loop.run_in_executor(
             None
             , self.m_sender.getPacketHeader
-            , len(socket_pack)) 
-
-        array_packet = await loop.run_in_executor(
+            , len(socket_pack.to_bytearray())) 
+         
+        encode_pack.write_bytes(array.array.tobytes(packet_head))
+  
+        list_packet = await loop.run_in_executor(
             None
             , MapleCustomEncryption.encryptData
-            , list(socket_pack.m_packet))   
+            , socket_pack.to_bytearray())    
+        
+        self.m_sender.crypt(list_packet)  
 
-        return
+        encode_pack.write_list(list_packet)
+
+        return encode_pack.to_bytearray()

@@ -9,4 +9,4 @@ class PacketHandler:
         pass
 
     async def validate_state(self) -> bool:
-        pass
+        return True

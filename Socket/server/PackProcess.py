@@ -6,9 +6,9 @@ class PackProcess():
         self.m_handle = dict()
         pass
 
-    def register_handle(self, id:EnumLoginOpCode, handle:PacketHandler):
+    def register_handle(self, id:int, handle:PacketHandler):
         self.m_handle[id] = handle
         return
     
-    async def get(self, id:EnumLoginOpCode) -> PacketHandler: 
-        return self.m_handle.get(EnumLoginOpCode(id))
+    async def get(self, id:int) -> PacketHandler: 
+        return self.m_handle.get(id)

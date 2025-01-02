@@ -82,8 +82,64 @@ class MapleCustomEncryption:
         tmp2 = ctypes.c_uint(tmp2).value >> 8
 
         return ctypes.c_byte(tmp | tmp2).value
-    
+     
+    def encryptData(_data:bytearray):
 
+        data:list = list(_data)
 
-    def encryptData(data:list):
-        return
+        j:int = 0
+        while (j < 6):
+
+            remember:int = 0
+            dataLength:int = ctypes.c_byte(len(data) & 0xFF).value
+
+            if ((j % 2) == 0):
+                
+                i:int = 0
+                while (i < len(data)):
+
+                    cur:int = data[i]
+                    cur = MapleCustomEncryption.roll_left(cur, 3)
+                    cur = cur + dataLength
+                    cur = cur ^ remember
+
+                    remember = cur
+
+                    cur = MapleCustomEncryption.roll_right(cur, dataLength & 0xFF)
+                    cur = ctypes.c_byte(~cur & 0xFF).value
+                    cur = cur + 0x48
+
+                    dataLength = dataLength - 1
+                    data[i] = cur 
+
+                    i = i + 1
+                    pass # while (i < len(data)):
+
+                pass # if ((j % 2) == 0):
+            else:
+                i:int = len(data) - 1
+                while (i >= 0):
+
+                    cur:int = data[i]
+                    cur = MapleCustomEncryption.roll_left(cur, 4)
+                    cur = cur + dataLength
+                    cur = cur ^ remember
+
+                    remember = cur
+
+                    cur = cur ^ 0x13
+                    cur = MapleCustomEncryption.roll_right(cur, 3)
+
+                    dataLength = dataLength - 1
+                    
+                    data[i] = cur
+
+                    i = i - 1
+                    pass # while (i >= 0):
+
+                pass # if ((j % 2) == 0) else:
+
+            j = j + 1
+            pass # while (j < 6):
+
+        return data
