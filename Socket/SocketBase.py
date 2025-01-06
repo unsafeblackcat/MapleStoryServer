@@ -16,6 +16,7 @@ class SocketBase():
         self.m_port = port
         self.m_server = None
         self.m_time_out = time_out
+        self.m_last_pong = 0
         pass 
            
     async def run(self) -> int:
@@ -55,8 +56,12 @@ class SocketBase():
                     await self.opcode_process(opcode_buffer, message) 
                 except asyncio.TimeoutError as e:
                     if is_time_out:
-                        raise asyncio.TimeoutError(e)
-                    else:
+                        if self.m_last_pong < currentime:
+                            raise asyncio.TimeoutError(e)
+                        else:
+                            is_time_out = False
+                        pass # if self.m_last_pong < currentime:
+                    else: # is_time_out:
                         currentime = int(datetime.now().timestamp() * 1000) 
                         inpack = SocketPack() 
                         inpack.write_short(0x11)

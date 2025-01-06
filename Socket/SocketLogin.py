@@ -21,7 +21,7 @@ class SocketLogin(SocketBase):
         super().__init__(ip, port, time_out)
  
         self.m_process_handle:PackProcess = PackProcess()
-        self.m_process_handle.register_handle(EnumGlobal.PONG.value, Pone())
+        self.m_process_handle.register_handle(EnumGlobal.PONG.value, Pone(self))
         self.m_process_handle.register_handle(EnumLoginOpCode.ACCEPT_TOS.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.AFTER_LOGIN.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.SERVERLIST_REREQUEST.value, AcceptToSHandler())
@@ -74,8 +74,8 @@ class SocketLogin(SocketBase):
             pass # if opcode_buffer[0] in [member.value[0] for member in EnumLoginOpCode]:
         elif opcode_buffer[0] in [member.value for member in EnumGlobal]:
             handle:PacketHandler = await self.m_process_handle.get(opcode_buffer[0])
-            if handle.validate_state():
-                handle.handle_packet(message)
+            if await handle.validate_state():
+                await handle.handle_packet(message)
                 pass # if handle.validate_state():
             pass # opcode_buffer[0] in [member.value[0] for member in EnumGlobal]:
 
