@@ -1,5 +1,5 @@
 from Socket.PacketHandler import PacketHandler
-from Socket.opcodes.LoginOpcode import EnumLoginOpCode
+from Socket.server.opcodes.LoginOpcode import EnumLoginOpCode
 
 class PackProcess():
     def __init__(self):

@@ -38,6 +38,9 @@ class SocketMessage():
             self.m_iv_recv
             , MAPLESTORY_SERVER_VERSION)
         pass
+
+    async def is_eof(self) -> bool:
+        return await self.m_reader.at_eof()
   
     async def read_pack(self
                         , read_len:int) -> bytes:
@@ -58,6 +61,19 @@ class SocketMessage():
             raise asyncio.CancelledError(e)
   
         return recv_data
+    
+    async def skip(self, number:int):
+        await self.read_bytes(number)
+        return
+    
+    async def read_bytes(self) -> int:
+        recv_data:bytes = await self.read_pack(1)
+        ret:int = int.from_bytes(recv_data, byteorder='big')
+        return ret
+    
+    async def read_string(self) -> str:
+        ret = ''
+        return ret
     
     async def read_header(self) -> array:
         recv_data:bytes = await self.read_pack(4)

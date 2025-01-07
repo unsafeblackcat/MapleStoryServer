@@ -6,8 +6,10 @@ from Socket.SocketMessage import SocketMessage
 from Socket.PacketHandler import PacketHandler 
 from Socket.server.PackProcess import PackProcess
 from Socket.opcodes.LoginOpcode import EnumLoginOpCode
-from Socket.opcodes.LoginOpcode import EnumGlobal
+from Socket.opcodes.LoginOpcode import EnumGlobal  
+from Socket.server.handlers.login.LoginPasswordHandler import LoginPasswordHandler
 from Socket.server.handlers.login.AcceptToSHandler import AcceptToSHandler
+from Socket.server.handlers.login.AfterLoginHandler import AfterLoginHandler
 from Socket.server.handlers.Pone import Pone
 from PublicFun import MAPLESTORY_SERVER_VERSION 
  
@@ -22,12 +24,13 @@ class SocketLogin(SocketBase):
  
         self.m_process_handle:PackProcess = PackProcess()
         self.m_process_handle.register_handle(EnumGlobal.PONG.value, Pone(self))
-        self.m_process_handle.register_handle(EnumLoginOpCode.ACCEPT_TOS.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.AFTER_LOGIN.value, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.LOGIN_PASSWORD.value, LoginPasswordHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.ACCEPT_TOS.value, AcceptToSHandler()) 
+        self.m_process_handle.register_handle(EnumLoginOpCode.SET_GENDER.value, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.AFTER_LOGIN.value, AfterLoginHandler())  
         self.m_process_handle.register_handle(EnumLoginOpCode.SERVERLIST_REREQUEST.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.CHARLIST_REQUEST.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.LOGIN_PASSWORD.value, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT.value, AcceptToSHandler()) 
         self.m_process_handle.register_handle(EnumLoginOpCode.RELOG.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.SERVERLIST_REQUEST.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.SERVERSTATUS_REQUEST.value, AcceptToSHandler())
@@ -39,8 +42,7 @@ class SocketLogin(SocketBase):
         self.m_process_handle.register_handle(EnumLoginOpCode.REGISTER_PIN, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.GUEST_LOGIN.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.REGISTER_PIC.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT_WITH_PIC.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.SET_GENDER.value, AcceptToSHandler())
+        self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT_WITH_PIC.value, AcceptToSHandler()) 
         self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_WITH_PIC.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_PIC_REGISTER.value, AcceptToSHandler())
 

@@ -12,11 +12,11 @@ class SocketBase():
             , ip:str
             , port:int
             , time_out:int = 30): 
-        self.m_ip = ip
-        self.m_port = port
+        self.m_ip:str = ip
+        self.m_port:int = port
         self.m_server = None
-        self.m_time_out = time_out
-        self.m_last_pong = 0
+        self.m_time_out:int = time_out
+        self.m_last_pong:int = 0
         pass 
            
     async def run(self) -> int:
