@@ -8,7 +8,7 @@ from Socket.SocketLogin import SocketLogin
 from Socket.SocketChannel import SocketChannel
  
 async def socket_wait():
-    socket_login = SocketLogin("127.0.0.1", 8484, 30)  
+    socket_login = SocketLogin("127.0.0.1", 8484, 10)  
     socket_login.m_server = await asyncio.start_server(socket_login._socket_callback
                 , socket_login.m_ip
                 , socket_login.m_port)
@@ -27,7 +27,7 @@ async def socket_wait():
     pass
 
 def main(argc, argv):   
-
+ 
     maplestory_config = MapleStoryConfig(os.getcwd() + '/Resources/config/')
     maplestroy_db = MapleStroyDB(
         maplestory_config.m_database.m_dbUrl
@@ -54,5 +54,6 @@ def main(argc, argv):
 # debian apt -y install python3-pycryptodome
 # windows pip install pycryptodome
 # pip install mysql-connector-python
+# pip install PyYaml
 if __name__ == "__main__":
     main(len(sys.argv), sys.argv)
