@@ -3,3 +3,6 @@
 https://github.com/BeiDouMS/BeiDou-Server
 
 遥遥无期开发中......
+
+2025/03/30: 
+    客户端的正常启动。
