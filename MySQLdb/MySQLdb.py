@@ -18,28 +18,29 @@ class MySQLdb:
             'user': self.m_user
             , 'password': self.m_password
             , 'host': self.m_ip
-            , 'charset': 'gbk'
+            , 'charset': 'utf8mb4'
+            , 'collation': 'utf8mb4_general_ci'
         }
 
         iret = 0
 
         try:
             self.m_connect = mysql.connector.pooling.MySQLConnectionPool(
-                pool_name = 'MapleStory'
+                pool_name = 'beidou'
                 , pool_size = 5
                 ,  **config)
         except mysql.connector.Error as err:
             iret = 1
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("提供的数据库账户或密码不正确!")
+                print("[MySQLdb]: 提供的数据库账户或密码不正确!")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("数据库不存在")
+                print("[MySQLdb]: 数据库不存在")
             else:
                 print(err)
         return iret
      
     
-    def excel_file_sql(self, sql_file:str, db_name:str = 'MapleStoryDB') -> int: 
+    def excel_file_sql(self, sql_file:str, db_name:str = 'beidou') -> int: 
         with open(sql_file, "rb") as f:
             sql = f.read()
 
@@ -52,7 +53,7 @@ class MySQLdb:
         return
     
 
-    def excel_sql(self, sql:str, db_name:str = 'MapleStoryDB') -> None:
+    def excel_sql(self, sql:str, db_name:str = 'beidou') -> None:
         cnx = self.m_connect.get_connection()
         cursor = cnx.cursor() 
 
@@ -67,7 +68,7 @@ class MySQLdb:
         cnx.close()
         return
    
-    def get_connect_cursor(self, db_name:str = 'MapleStoryDB'):
+    def get_connect_cursor(self, db_name:str = 'beidou'):
         cnx = self.m_connect.get_connection()
         cursor = cnx.cursor() 
         if db_name is not None:

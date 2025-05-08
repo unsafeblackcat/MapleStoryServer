@@ -29,21 +29,18 @@ async def socket_wait():
 def main(argc, argv):   
  
     maplestory_config = MapleStoryConfig(os.getcwd() + '/Resources/config/')
+
     maplestroy_db = MapleStroyDB(
         maplestory_config.m_database.m_dbUrl
         , maplestory_config.m_database.m_dbUser
         , maplestory_config.m_database.m_dbPass
-        , os.getcwd() + '/Resources/sql/')
-      
-    #iret = 0
-    #while True:
-
-     #   iret = maplestroy_db.init(maplestory_config.m_game)
-      #  if iret :
-       #     break
+        , os.getcwd() + '/Resources/sql/') 
+    iret = maplestroy_db.init(maplestory_config.m_game)
+    if iret :
+        print('数据库初始化失败, Maplestory服务端停止启动。错误码: ' + iret)
+        return
+        pass
         
-        #break
-
     asyncio.run(socket_wait()) 
     while True:
         time.sleep(1000)

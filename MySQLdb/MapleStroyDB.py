@@ -14,10 +14,16 @@ class MapleStroyDB(MySQLdb):
 
         while True:
 
+            print('[数据库]: 准备连接数据库 ' + self.m_ip + ', ' + self.m_user + ', ' + self.m_password)
+
             iret = self.connect()
             if iret: break
+  
+            print('[数据库]: 数据库连接成功... 开始初始化数据库. ')
 
             self._init_db()
+ 
+            print('[数据库]: 开始更新数据库. ')
 
             iret = self._updateDataBase()
             if iret : break
