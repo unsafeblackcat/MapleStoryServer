@@ -5,8 +5,8 @@ from Socket.SocketPack import SocketPack
 from Socket.SocketMessage import SocketMessage
 from Socket.PacketHandler import PacketHandler 
 from Socket.server.PackProcess import PackProcess
-from Socket.opcodes.LoginOpcode import EnumLoginOpCode
-from Socket.opcodes.LoginOpcode import EnumGlobal  
+from Socket.server.opcodes.LoginOpcode import EnumLoginOpCode
+from Socket.server.opcodes.LoginOpcode import EnumGlobal  
 from Socket.server.handlers.login.LoginPasswordHandler import LoginPasswordHandler
 from Socket.server.handlers.login.AcceptToSHandler import AcceptToSHandler
 from Socket.server.handlers.login.AfterLoginHandler import AfterLoginHandler

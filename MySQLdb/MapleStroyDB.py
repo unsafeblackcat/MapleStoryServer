@@ -1,7 +1,17 @@
 import time
+import re
 
 from MySQLdb.MySQLdb import *
 from Config.ConfigGame import *
+from pathlib import Path
+from mysql.connector import (
+    Error,
+    InterfaceError,
+    DatabaseError,
+    OperationalError,
+    IntegrityError
+)
+
 
 class MapleStroyDB(MySQLdb):
     def __init__(self, ip:str, user:str, password:str, sql_dir:str):
@@ -12,8 +22,7 @@ class MapleStroyDB(MySQLdb):
     def init(self, config_gm:ConfigGame) -> int:
         iret = 0
 
-        while True:
-
+        while True: 
             print('[数据库]: 准备连接数据库 ' + self.m_ip + ', ' + self.m_user + ', ' + self.m_password)
 
             iret = self.connect()
@@ -23,35 +32,84 @@ class MapleStroyDB(MySQLdb):
 
             self._init_db()
  
-            print('[数据库]: 开始更新数据库. ')
-
             iret = self._updateDataBase()
             if iret : break
 
             iret = self._init_account()
             if iret : break
-
-            #iret = self._clear_nx_code_coupons(config_gm.m_useClearOutdatedCoupons)
-            #if iret : break
+ 
  
             break
+            pass # while True:
 
         return iret
-      
+     
     def _init_db(self) -> int:
         iret = 0
+        
+        sql_history = "sql_history.txt"
+    
+        sql_list = list() 
+        for p in Path(self.m_sql_dir).iterdir():
+            if os.path.basename(p) == sql_history:
+                pass
+            else:
+                sql_list.append(p)
+            pass
+        sql_list = sorted(sql_list, key=lambda f: tuple(map(int, re.search(r'V(\d+\.\d+\.\d+)', str(f)).group(1).split('.'))))
 
-        if self._is_maplestory_table():
-            return 0
 
-        db_database = self.m_sql_dir + 'db_database.sql'
-        self.excel_file_sql(db_database, db_name=None) 
+ 
+        if Path(self.m_sql_dir + sql_history).is_file():
 
-        db_drops = self.m_sql_dir + 'db_drops.sql' 
-        self.excel_file_sql(db_drops, db_name=None)
+            sql_file = str()
+            with open(self.m_sql_dir + sql_history, "r", encoding="utf-8") as f:
+                sql_file = f.read()
 
-        db_shopupdate = self.m_sql_dir + 'db_shopupdate.sql' 
-        self.excel_file_sql(db_shopupdate, db_name=None)
+            sql_list_new = list()
+
+            updata:int = 0
+            for it in sql_list:
+                if os.path.basename(it) == sql_file:
+                    updata = 1
+                    continue
+
+                if updata: 
+                    sql_list_new.append(it)
+
+                pass
+
+            sql_list = sql_list_new 
+            pass
+        else:
+            pass
+
+        if len(sql_list): 
+            tail_sql:str = str()
+            for it in sql_list: 
+                
+                try: 
+                    print(f"[数据库] 执行新的sql脚本: {it}")
+                    self.excel_file_sql(it)  
+                except InterfaceError as e:
+                    print(f"[数据库] 接口错误: {e}")
+                except OperationalError as e:
+                    print(f"[数据库] 操作错误: {e}")
+                except IntegrityError as e:
+                    print(f"[数据库] 完整性错误: {e}")
+                except Error as e:
+                    print(f"[数据库] 数据库错误: {e}")
+                except Exception as e:
+                    print(f"[数据库] 其他错误: {e}")
+                
+                tail_sql = os.path.basename(it)
+                pass
+    
+            with open(self.m_sql_dir + sql_history, "w", encoding="utf-8") as f:
+                f.write(tail_sql)
+
+            pass
+
         return iret
     
     def _is_maplestory_table(self) -> int:
@@ -62,7 +120,7 @@ class MapleStroyDB(MySQLdb):
         list_data = cursor.fetchall()
         for it in list_data:
             if len(it):
-                if it[0] == 'MapleStoryDB':
+                if it[0] == 'beidou':
                     iret = 1
                     break
             pass

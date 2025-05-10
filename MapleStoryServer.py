@@ -40,6 +40,8 @@ def main(argc, argv):
         print('数据库初始化失败, Maplestory服务端停止启动。错误码: ' + iret)
         return
         pass
+
+    
         
     asyncio.run(socket_wait()) 
     while True:

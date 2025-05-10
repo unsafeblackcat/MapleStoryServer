@@ -2,7 +2,7 @@ import os
 import time
 
 import mysql.connector
-from mysql.connector import errorcode
+from mysql.connector import errorcode 
 
 class MySQLdb:
     def __init__(self, ip:str, user:str, password:str):
@@ -22,9 +22,26 @@ class MySQLdb:
             , 'collation': 'utf8mb4_general_ci'
         }
 
-        iret = 0
+        iret = 0 
+        try:  
+            conn = mysql.connector.connect(
+                host=self.m_ip
+                , user=self.m_user
+                , password=self.m_password)
+            cursor = conn.cursor()
+            cursor.execute("SHOW DATABASES LIKE \'beidou\'")
+            result = cursor.fetchone() 
+            if result:
+                print('[MySQLdb]: 北斗数据库已存在.')
+                pass
+            else:
+                cursor.execute("CREATE DATABASE beidou DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
+                print('[MySQLdb]: 北斗数据库创建成功!')
+                pass
+            
+            cursor.close()
+            conn.close()
 
-        try:
             self.m_connect = mysql.connector.pooling.MySQLConnectionPool(
                 pool_name = 'beidou'
                 , pool_size = 5
