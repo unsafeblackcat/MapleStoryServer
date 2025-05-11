@@ -4,6 +4,7 @@ https://github.com/BeiDouMS/BeiDou-Server
 
 遥遥无期开发中......
 
+```txt
 2025/05/11
     服务器语言的配置 √
     wz文件格式分析和逻辑撰写  
@@ -14,3 +15,4 @@ https://github.com/BeiDouMS/BeiDou-Server
       
 2025/03/30: 
     客户端的正常启动。
+```

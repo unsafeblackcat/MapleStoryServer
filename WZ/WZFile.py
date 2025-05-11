@@ -1,4 +1,8 @@
 from enum import Enum
+from pathlib import Path
+
+from Config.MapleStoryConfig import *
+
 
 class WZFileEnum(Enum):
     QUEST = "Quest"
@@ -21,9 +25,13 @@ class WZFile:
         
     def get_file_path(self) -> str:
         ret:str = "" 
-        wzpath:str = "wz" + self.m_file_name
-        langpath = "wz-" + "" + self.m_file_name
-        
+        wzpath:str = os.getcwd() + "/wz/" + self.m_file_name
+        langpath = os.getcwd() + "/wz-" + get_language() + self.m_file_name + "/"
+
+        if Path(langpath).is_file():
+            ret = langpath
+        else: 
+            ret = wzpath
         return ret
 
 
