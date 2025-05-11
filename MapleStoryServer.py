@@ -26,9 +26,8 @@ async def socket_wait():
 
     pass
 
-def main(argc, argv):   
- 
-    maplestory_config = MapleStoryConfig(os.getcwd() + '/Resources/config/')
+def main(argc, argv):    
+    maplestory_config = get_MapleStoryConfig()
 
     maplestroy_db = MapleStroyDB(
         maplestory_config.m_database.m_dbUrl
@@ -39,10 +38,9 @@ def main(argc, argv):
     if iret :
         print('数据库初始化失败, Maplestory服务端停止启动。错误码: ' + iret)
         return
-        pass
-
     
-        
+    print('数据库初始化成功, 开始创建Socket... ')
+
     asyncio.run(socket_wait()) 
     while True:
         time.sleep(1000)
@@ -53,6 +51,5 @@ def main(argc, argv):
 # debian apt -y install python3-pycryptodome
 # windows pip install pycryptodome
 # pip install mysql-connector-python
-# pip install PyYaml
 if __name__ == "__main__":
     main(len(sys.argv), sys.argv)

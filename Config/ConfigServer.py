@@ -12,6 +12,7 @@ class ConfigServer(ConfigBase):
         self.m_useCharacterAccountCheck = self.get_item('useCharacterAccountCheck')
         self.m_useMaxRange = self.get_item('useMaxRange')
         self.m_lockMonitorTime = self.get_item('lockMonitorTime')
+        self.m_language = self.get_item('language')
 
     
         return

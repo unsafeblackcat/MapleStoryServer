@@ -70,10 +70,14 @@ class SocketMessage():
         recv_data:bytes = await self.read_pack(1)
         ret:int = int.from_bytes(recv_data, byteorder='big')
         return ret
+     
+    async def read_short(self) -> int: 
+        return self.read_pack(2)
     
-    async def read_string(self) -> str:
-        ret = ''
-        return ret
+    async def read_string(self) -> str: 
+        str_len:int = self.read_short() 
+        str = self.read_bytes(str_len) 
+        return str
     
     async def read_header(self) -> array:
         recv_data:bytes = await self.read_pack(4)

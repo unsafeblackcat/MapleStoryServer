@@ -31,13 +31,7 @@ class MapleStroyDB(MySQLdb):
             print('[数据库]: 数据库连接成功... 开始初始化数据库. ')
 
             self._init_db()
- 
-            iret = self._updateDataBase()
-            if iret : break
-
-            iret = self._init_account()
-            if iret : break
- 
+   
  
             break
             pass # while True:
@@ -57,9 +51,7 @@ class MapleStroyDB(MySQLdb):
                 sql_list.append(p)
             pass
         sql_list = sorted(sql_list, key=lambda f: tuple(map(int, re.search(r'V(\d+\.\d+\.\d+)', str(f)).group(1).split('.'))))
-
-
- 
+  
         if Path(self.m_sql_dir + sql_history).is_file():
 
             sql_file = str()
@@ -84,7 +76,10 @@ class MapleStroyDB(MySQLdb):
         else:
             pass
 
-        if len(sql_list): 
+        sql_count = len(sql_list)
+        if sql_count:  
+            print(f"[数据库] 新的脚本: " + sql_count)
+
             tail_sql:str = str()
             for it in sql_list: 
                 
@@ -111,77 +106,3 @@ class MapleStroyDB(MySQLdb):
             pass
 
         return iret
-    
-    def _is_maplestory_table(self) -> int:
-        iret = 0
-        
-        cnx, cursor = self.get_connect_cursor(None) 
-        cursor.execute('show databases')
-        list_data = cursor.fetchall()
-        for it in list_data:
-            if len(it):
-                if it[0] == 'beidou':
-                    iret = 1
-                    break
-            pass
-
-        self.free_connect_cursor(cnx, cursor)
-        return iret
-    
-    def _updateDataBase(self) -> int:
-          
-        while True:
-            iret = self._check_update_log()
-            if iret : break  
-
-            break
-
-        return iret
-     
-    def _check_update_log(self) -> int:
-        iret = 0
-
-        connect, cursor =self.get_connect_cursor()
-
-        brequery = True
-        while True:  
-            cursor.execute('show tables like \'db_update_log\'')
-            list_data = cursor.fetchall()
-            if not list_data:
-                db_update_log = self.m_sql_dir + 'db_update_log.sql'
-                iret = self.excel_file_sql(db_update_log)
-                if brequery:
-                    brequery = False
-                    continue
-                else: 
-                    pass
- 
-            break
-
-        self.free_connect_cursor(connect, cursor)
-        return iret
-    
-    def _init_account(self) -> int:
-        iret  = 0 
-        self.excel_sql('UPDATE accounts SET loggedin = 0')
-        self.excel_sql('UPDATE characters SET HasMerchant = 0') 
-        return iret
-    
-    def _clear_nx_code_coupons(self, clear:int): 
-        if not clear:
-            return
-        
-        current_time = time.localtime()
-        current_time = time.mktime(current_time) 
-        current_time =  current_time - (14 * 24 * 60 * 60 * 1000)
-        
-        self.get_connect_cursor()
-
-        cnx, cursor = self.get_connect_cursor()
-        cursor.execute('SELECT id FROM nxcode WHERE expiration <= ?', current_time) 
-        list_data = cursor.fetchall()
-        if list_data: 
-            pass
-        
-        self.free_connect_cursor(cnx, cursor)
-        return

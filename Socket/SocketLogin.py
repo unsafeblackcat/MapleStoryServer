@@ -44,8 +44,7 @@ class SocketLogin(SocketBase):
         self.m_process_handle.register_handle(EnumLoginOpCode.REGISTER_PIC.value, AcceptToSHandler())
         self.m_process_handle.register_handle(EnumLoginOpCode.CHAR_SELECT_WITH_PIC.value, AcceptToSHandler()) 
         self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_WITH_PIC.value, AcceptToSHandler())
-        self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_PIC_REGISTER.value, AcceptToSHandler())
-
+        self.m_process_handle.register_handle(EnumLoginOpCode.VIEW_ALL_PIC_REGISTER.value, AcceptToSHandler()) 
         pass
  
     async def socket_connect(
@@ -70,8 +69,8 @@ class SocketLogin(SocketBase):
          
         if opcode_buffer[0] in [member.value for member in EnumLoginOpCode]:
             handle:PacketHandler = await self.m_process_handle.get(opcode_buffer[0])
-            if handle.validate_state():
-                handle.handle_packet(message)
+            if await handle.validate_state():
+                await handle.handle_packet(message)
                 pass # if handle.validate_state():
             pass # if opcode_buffer[0] in [member.value[0] for member in EnumLoginOpCode]:
         elif opcode_buffer[0] in [member.value for member in EnumGlobal]:
