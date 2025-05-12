@@ -1,6 +1,7 @@
 import time
 import re
 
+from PublicFun import *
 from MySQLdb.MySQLdb import *
 from Config.ConfigGame import *
 from pathlib import Path
@@ -41,18 +42,18 @@ class MapleStroyDB(MySQLdb):
     def _init_db(self) -> int:
         iret = 0
         
-        sql_history = "sql_history.txt"
+        sql_history:str = "sql_history.txt"
     
-        sql_list = list() 
-        for p in Path(self.m_sql_dir).iterdir():
-            if os.path.basename(p) == sql_history:
+        sql_list:list = enum_dir(self.m_sql_dir)
+        for it in sql_list:
+            if path_get_short_name(it) == sql_history:
                 pass
             else:
-                sql_list.append(p)
-            pass
+                sql_list.append(it)
+                
         sql_list = sorted(sql_list, key=lambda f: tuple(map(int, re.search(r'V(\d+\.\d+\.\d+)', str(f)).group(1).split('.'))))
   
-        if Path(self.m_sql_dir + sql_history).is_file():
+        if is_file_exist(self.m_sql_dir + sql_history):
 
             sql_file = str()
             with open(self.m_sql_dir + sql_history, "r", encoding="utf-8") as f:
@@ -62,7 +63,7 @@ class MapleStroyDB(MySQLdb):
 
             updata:int = 0
             for it in sql_list:
-                if os.path.basename(it) == sql_file:
+                if path_get_short_name() == sql_file:
                     updata = 1
                     continue
 
@@ -97,7 +98,7 @@ class MapleStroyDB(MySQLdb):
                 except Exception as e:
                     print(f"[数据库] 其他错误: {e}")
                 
-                tail_sql = os.path.basename(it)
+                tail_sql = path_get_short_name(it)
                 pass
     
             with open(self.m_sql_dir + sql_history, "w", encoding="utf-8") as f:

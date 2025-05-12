@@ -1,7 +1,6 @@
-from enum import Enum
-from pathlib import Path
-
+from enum import Enum 
 from Config.MapleStoryConfig import *
+from PublicFun import *
 
 
 class WZFileEnum(Enum):
@@ -21,14 +20,14 @@ class WZFileEnum(Enum):
 
 class WZFile:
     def __init__(self, wzfe:WZFileEnum):
-        self.m_file_name = wzfe + ".wz"
+        self.m_file_name = wzfe.name + ".wz"
         
     def get_file_path(self) -> str:
         ret:str = "" 
-        wzpath:str = os.getcwd() + "/wz/" + self.m_file_name
-        langpath = os.getcwd() + "/wz-" + get_language() + self.m_file_name + "/"
+        wzpath:str = os.getcwd() + "/Resources/wz/" + self.m_file_name
+        langpath = os.getcwd() + "/Resources/wz-" + get_language() + self.m_file_name + "/"
 
-        if Path(langpath).is_file():
+        if is_file_exist(langpath):
             ret = langpath
         else: 
             ret = wzpath

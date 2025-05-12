@@ -1,13 +1,11 @@
-import sys  
-import os 
-import asyncio
-import xml.etree.ElementTree as ET
+import sys   
+import asyncio 
 
 from Config.MapleStoryConfig import *
 from MySQLdb.MapleStroyDB import * 
 from Socket.SocketLogin import SocketLogin
 from Socket.SocketChannel import SocketChannel
-from WZ.SkillFactory import *
+from WZ.SkillFactory import * 
  
 async def socket_wait():
     socket_login = SocketLogin("127.0.0.1", 8484, 10)  
@@ -27,54 +25,10 @@ async def socket_wait():
             , socket_channel.m_server.serve_forever())
 
     pass
-
-
-def list_all_files(directory):
-    file_list = []
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            full_path = os.path.join(root, file)
-            file_list.append(full_path)
-    return file_list
-
-
-def getInt(path, xmlit, re = -1):
-    iret = re
-
-    for node in xmlit.iter():
-        print(node.tag, node.attrib, node.text)
- 
-    return  iret
-
-def loadFromData(id, xmlit):
-
-    id = getInt("skillType", xmlit, -1)
-
-    return
-
+  
 def main(argc, argv):    
-
-    strpath = os.getcwd() + '/Resources/wz/Skill.wz' 
-    files = list_all_files(strpath)
-    for it in files: 
-        tree = ET.parse(it)
-        root = tree.getroot()
-        for child in root:
-            print(child.tag, child.attrib, child.text)
-            if (child.tag == 'imgdir' and child.attrib.get('name') == 'skill'):
-                for skill_entry in child:
-                    skillid = int(skill_entry.get('name'))
-
-                    loadFromData(skillid, skill_entry)
  
-                pass
-            pass
-        pass
-    
-
-    i = 0
-
-
+    get_skill_factory().init()
 
     maplestory_config = get_MapleStoryConfig()
 
@@ -88,9 +42,7 @@ def main(argc, argv):
         print('数据库初始化失败, Maplestory服务端停止启动。错误码: ' + iret)
         return
      
-    print('开始加载技能WZ... ')  
-    load_skill()
-
+    print('开始加载技能WZ... ')    
 
     print('开始创建Socket... ')
 
