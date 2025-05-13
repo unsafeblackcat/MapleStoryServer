@@ -72,9 +72,25 @@ def xml_get_element_to_str(skill_element:ET.Element, element:str, def_ret:str) -
 def xml_is_element(skill_element:ET.Element, element:str) -> bool:
     bret:bool = False
 
+    query_element, rest = element.split('/', 1)
+
     for node in skill_element.iter():
-        if node.attrib.get('name') == element:
-            bret = True
+        if node.attrib.get(query_element) == element:
+            if len(rest):
+                bret = xml_is_element(node, rest)
+            else:
+                bret = True
             break
 
     return bret
+
+def xml_get_element_item(skill_element:ET.Element, element:str) -> ET.Element:
+    
+    item:ET.Element = None
+
+    for node in skill_element.iter():
+        if node.attrib.get("name") == element:
+            item = node
+            break
+
+    return item
