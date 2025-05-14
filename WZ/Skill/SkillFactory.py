@@ -1,53 +1,19 @@
 import xml.etree.ElementTree as ET
-from typing import Optional
 
 from PublicFun import * 
 from WZ.WZFile import *  
-from WZ.SkillTypeFaShi import *
-from WZ.SkillTypeFeiXia import *
-from WZ.SkillTypeGongJianShou import *
-from WZ.SkillTypeHaiDao import *
-from WZ.SkillTypeQiShiTuan import *
-from WZ.SkillTypeShenLong import *
-from WZ.SkillTypeSuperGM import *
-from WZ.SkillTypeXinShou import *
-from WZ.SkillTypeZhanShen import *
-from WZ.SkillTypeZhanShi import *  
-
-class SkillElement (Enum):
-    
-    NEUTRAL = (0, False)
-    PHYSICAL = (1, False)
-    FIRE = (2, True)
-    ICE = (3, True)
-    LIGHTING = (4, False)
-    POISON = (5, False)
-    HOLY = (6, True)
-    DARKNESS = (7, False)
+from WZ.Skill.Job.FaShi import *
+from WZ.Skill.Job.FeiXia import *
+from WZ.Skill.Job.GongJianShou import *
+from WZ.Skill.Job.HaiDao import *
+from WZ.Skill.Job.QiShiTuan import *
+from WZ.Skill.Job.ShenLong import *
+from WZ.Skill.Job.SuperGM import *
+from WZ.Skill.Job.XinShou import *
+from WZ.Skill.Job.ZhanShen import *
+from WZ.Skill.Job.ZhanShi import *  
+from WZ.Skill.Skill import *
  
-    def __init__(self, value:int, special:bool):
-        self.m_value = value
-        self.m_special = special
-        pass
-
-    @classmethod
-    def from_initial(cls, char: str) -> Optional['SkillElement']:
-        char = char.upper()
-        for member in cls:
-            if member.name.startswith(char):
-                return member
-        return SkillElement.NEUTRAL
-        
-
-
-class Skill:
-    def __init__(self, id:int):
-        self.m_id:int = id
-        self.m_job:int = id // 10000
-        self.m_element:SkillElement = None
-        self.m_action = False
-        pass
-
 class SkillFactory:
     def __init__(self):
         self.m_skills:dict[int, Skill] = {}
@@ -76,8 +42,8 @@ class SkillFactory:
                     for skill_element in child:
                         skillid = int(skill_element.get('name'))  
                         skill:Skill = self._get_skill(skillid, skill_element)
-                        
-    
+                        self.m_skills[skillid] = skill
+                        pass   
                     pass
                 pass
             pass
@@ -348,7 +314,7 @@ class SkillFactory:
                 pass
 
             # skill_element
-            
+            skill_ret.m_stat_effect.append()
 
             pass # else
         

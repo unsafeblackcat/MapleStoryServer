@@ -82,7 +82,7 @@ class Cleric(Enum):
     HOLY_ARROW = 2301005
 
 
-# 祭祀
+# 祭司
 class Priest(Enum):
     ELEMENTAL_RESISTANCE = 2310000
     DISPEL = 2311001

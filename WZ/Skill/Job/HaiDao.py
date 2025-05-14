@@ -18,6 +18,15 @@ class Gunslinger(Enum):
     WINGS = 5201005
     RECOIL_SHOT = 5201006
 
+# 大副
+class Outlaw(Enum):
+    BURST_FIRE = 5210000
+    OCTOPUS = 5211001
+    GAVIOTA = 5211002
+    FLAME_THROWER = 5211004
+    HOMING_BEACON = 5211006
+    ICE_SPLITTER = 5211005
+
 # 船长
 class Corsair(Enum):
     MAPLE_WARRIOR = 5221000
@@ -32,6 +41,16 @@ class Corsair(Enum):
     SPEED_INFUSION = 5221010
     BULLSEYE = 5220011
 
+# 拳手
+class Brawler(Enum):
+    IMPROVE_MAX_HP = 5100000
+    KNUCKLER_MASTERY = 5100001
+    BACK_SPIN_BLOW = 5101002
+    DOUBLE_UPPERCUT = 5101003
+    CORKSCREW_BLOW = 5101004
+    MP_RECOVERY = 5101005
+    KNUCKLER_BOOSTER = 5101006
+    OAK_BARREL = 5101007
 
 # 斗士
 class Marauder(Enum):
