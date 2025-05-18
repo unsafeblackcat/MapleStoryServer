@@ -29,6 +29,8 @@ class MapleStoryConfig:
          
         gm = config_dir + 'gm.config' 
         self.m_gm = ConfigGM(gm)
+
+        self.m_use_ultra_nimble_feet = False
         pass
 
 g_MapleStoryConfig:MapleStoryConfig = None 

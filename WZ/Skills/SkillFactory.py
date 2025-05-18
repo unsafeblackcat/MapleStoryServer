@@ -2,17 +2,17 @@ import xml.etree.ElementTree as ET
 
 from PublicFun import * 
 from WZ.WZFile import *  
-from WZ.Skill.Job.FaShi import *
-from WZ.Skill.Job.FeiXia import *
-from WZ.Skill.Job.GongJianShou import *
-from WZ.Skill.Job.HaiDao import *
-from WZ.Skill.Job.QiShiTuan import *
-from WZ.Skill.Job.ShenLong import *
-from WZ.Skill.Job.SuperGM import *
-from WZ.Skill.Job.XinShou import *
-from WZ.Skill.Job.ZhanShen import *
-from WZ.Skill.Job.ZhanShi import *  
-from WZ.Skill.Skill import *
+from WZ.Skills.Job.FaShi import *
+from WZ.Skills.Job.FeiXia import *
+from WZ.Skills.Job.GongJianShou import *
+from WZ.Skills.Job.HaiDao import *
+from WZ.Skills.Job.QiShiTuan import *
+from WZ.Skills.Job.ShenLong import *
+from WZ.Skills.Job.SuperGM import *
+from WZ.Skills.Job.XinShou import *
+from WZ.Skills.Job.ZhanShen import *
+from WZ.Skills.Job.ZhanShi import *  
+from WZ.Skills.Skill import *
  
 class SkillFactory:
     def __init__(self):

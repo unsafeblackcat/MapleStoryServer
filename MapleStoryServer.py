@@ -5,7 +5,7 @@ from Config.MapleStoryConfig import *
 from MySQLdb.MapleStroyDB import * 
 from Socket.SocketLogin import SocketLogin
 from Socket.SocketChannel import SocketChannel
-from WZ.Skill.SkillFactory import * 
+from WZ.Skills.SkillFactory import * 
  
 async def socket_wait():
     socket_login = SocketLogin("127.0.0.1", 8484, 10)  

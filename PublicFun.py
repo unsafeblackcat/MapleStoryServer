@@ -49,7 +49,7 @@ def path_get_short_name(file_path:str) -> str:
     return os.path.basename(file_path)
 
 
-def xml_get_element_to_int(skill_element:ET.Element, element:str, def_ret:int) -> int:
+def xml_get_element_to_int(skill_element:ET.Element, element:str, def_ret:int = 0) -> int:
     iret = def_ret
 
     for node in skill_element.iter():
