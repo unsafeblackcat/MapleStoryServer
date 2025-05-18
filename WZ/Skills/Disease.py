@@ -1,9 +1,6 @@
 import random
-from enum import Enum 
-
-
-from WZ.Skill.MobSkillType import *
-from constants.game.GameConstants import GameConstants
+from enum import Enum  
+from WZ.Skills.MobSkillType import * 
 
 class Disease(Enum):
     NULL = (0x0, None)
@@ -39,7 +36,9 @@ class Disease(Enum):
         except ValueError:
             return None
          
+    @staticmethod
     def get_random() -> int:
+        from constants.game.GameConstants import GameConstants
         return random.choice(GameConstants.CPQ_DISEASES)
     
     @classmethod

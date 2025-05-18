@@ -44,9 +44,8 @@ class MobSkillType(Enum):
     SEAL_SKILL = 157
     SUMMON = 200
 
-    def __init__(self):
-        super().__init__()
-        self.m_id = 0
+    def __init__(self, value:int): 
+        self.m_id = value
 
     @classmethod 
     def is_from(cls, id:int) -> Optional['MobSkillType']:

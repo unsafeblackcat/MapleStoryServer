@@ -39,48 +39,48 @@ class CardItemupStats:
 class StatEffect:
     def __init__(self, element_item:ET.Element, id:int, is_skill:bool, over_time:bool):
         self.m_duration:int = xml_get_element_to_int(element_item, "time", -1)
-        self.m_hp:int = xml_get_element_to_int(element_item, "hp", 0)
-        self.m_hpR:int = xml_get_element_to_int(element_item, "hpR", 0) / 100.0
-        self.m_mp:int = xml_get_element_to_int(element_item, "mp", 0)
-        self.m_mpR:int = xml_get_element_to_int(element_item, "mpR", 0) / 100.0
-        self.m_hpCon:int = xml_get_element_to_int(element_item, "hpCon", 0)
-        self.m_mpCon:int = xml_get_element_to_int(element_item, "mpCon", 0)
+        self.m_hp:int = xml_get_element_to_int(element_item, "hp")
+        self.m_hpR:int = xml_get_element_to_int(element_item, "hpR") / 100.0
+        self.m_mp:int = xml_get_element_to_int(element_item, "mp")
+        self.m_mpR:int = xml_get_element_to_int(element_item, "mpR") / 100.0
+        self.m_hpCon:int = xml_get_element_to_int(element_item, "hpCon")
+        self.m_mpCon:int = xml_get_element_to_int(element_item, "mpCon")
 
-        ipro:int = xml_get_element_to_int(element_item, "prop", 0)
+        ipro:int = xml_get_element_to_int(element_item, "prop")
         self.m_prop = ipro / 100.0
 
-        self.m_cp = xml_get_element_to_int(element_item, "cp", 0)
+        self.m_cp = xml_get_element_to_int(element_item, "cp")
 
         cure:list = list()
-        if xml_get_element_to_int(element_item, "poison", 0) > 0:
+        if xml_get_element_to_int(element_item, "poison") > 0:
             cure.append(Disease.POISON)
             pass
 
-        if xml_get_element_to_int(element_item, "seal", 0) > 0:
+        if xml_get_element_to_int(element_item, "seal") > 0:
             cure.append(Disease.SEAL)
             pass
         
-        if xml_get_element_to_int(element_item, "darkness", 0) > 0:
+        if xml_get_element_to_int(element_item, "darkness") > 0:
             cure.append(Disease.DARKNESS)
             pass
 
-        if xml_get_element_to_int(element_item, "weakness", 0) > 0:
+        if xml_get_element_to_int(element_item, "weakness") > 0:
             cure.append(Disease.WEAKEN)
             cure.append(Disease.SLOW)
             pass
 
-        if xml_get_element_to_int(element_item, "curse", 0) > 0:
+        if xml_get_element_to_int(element_item, "curse") > 0:
             cure.append(Disease.CURSE)
             pass
 
         self.m_cure_debuffer:list = cure
-        self.m_nuff_skill:int = xml_get_element_to_int(element_item, "nuffSkill", 0)
-        self.m_mob_count:int = xml_get_element_to_int(element_item, "mobCount", 0)
-        self.m_cool_time:int = xml_get_element_to_int(element_item, "cooltime", 0)
-        self.m_morph:int = xml_get_element_to_int(element_item, "morph", 0)
-        self.m_ghost:int = xml_get_element_to_int(element_item, "ghost", 0)
-        self.m_inc_fatigue:int = xml_get_element_to_int(element_item, "incFatigue", 0)
-        self.m_repeat_effect:int = xml_get_element_to_int(element_item, "repeatEffect", 0)
+        self.m_nuff_skill:int = xml_get_element_to_int(element_item, "nuffSkill")
+        self.m_mob_count:int = xml_get_element_to_int(element_item, "mobCount")
+        self.m_cool_time:int = xml_get_element_to_int(element_item, "cooltime")
+        self.m_morph:int = xml_get_element_to_int(element_item, "morph")
+        self.m_ghost:int = xml_get_element_to_int(element_item, "ghost")
+        self.m_inc_fatigue:int = xml_get_element_to_int(element_item, "incFatigue")
+        self.m_repeat_effect:int = xml_get_element_to_int(element_item, "repeatEffect")
         
         mdd:ET.Element = xml_get_element_item(element_item, "0")
         if mdd != None:
@@ -163,7 +163,7 @@ class StatEffect:
                         self.add_buff_statPair_to_list_if_not_zero(statups, BuffStat.COUPON_DRP3, 3)
 
                     pass
-                elif ItemId.is_monster_card(id):
+                elif ItemId.is_monster_card(id): 
                     prob:int = 0
                     itemupCode:int = 0x7fffffff # Integer.MAX_VALUE
                     areas:dict = None
@@ -171,8 +171,23 @@ class StatEffect:
 
                     con:ET.Element = xml_get_element_item(element_item, "con")
                     if con != None:
-                        areas = dict()
-                        # debug
+                        areas:list = list()
+                        
+                        for it in con:
+                            type:int = xml_get_element_to_int(it, "type", -1)
+                            if type == 0:
+                                startMap:int = xml_get_element_to_int(it, "sMap")
+                                endMap:int = xml_get_element_to_int(it, "endMap")
+                                areas.append(dict(startMap, endMap))
+                                pass
+                            elif type == 2:
+                                inParty = True
+                                pass
+                            pass
+
+                        if len(areas) == 0:
+                            pass 
+
                         pass
 
                     if xml_get_element_to_int(element_item, "mesoupbyitem") != 0:
@@ -213,6 +228,9 @@ class StatEffect:
                             self.add_buff_statPair_to_list_if_not_zero(statups, BuffStat.MAP_PROTECTION, 2)
 
                     self.m_cardStats:CardItemupStats = CardItemupStats(itemupCode, prob, areas, inParty)
+                    pass
+                elif ItemId.is_exp_increase(id):
+                    self.add_buff_statPair_to_list_if_not_zero(statups, BuffStat.EXP_INCREASE, xml_get_element_to_int(element_item, "expinc"))
 
             else: # if is_skill == False:
                 if self.is_map_chair(id):
@@ -223,7 +241,7 @@ class StatEffect:
                       or id == Legend.AGILE_BODY)
                     and get_MapleStoryConfig().m_use_ultra_nimble_feet):
                     self.m_jump = self.m_speed * 4
-                    self.m_speed = self.m_speed * 5
+                    self.m_speed = self.m_speed * 15
                 pass 
 
             
@@ -652,8 +670,8 @@ class StatEffect:
         if self.m_ghost > 0 and is_skill == False:
             statups.append(dict(BuffStat.GHOST_MORPH,  self.m_ghost)) 
         
-        self.m_monsterStatus:list = monsterStatus
-        self.m_statups:dict = statups 
+        self.m_monsterStatus:dict = monsterStatus
+        self.m_statups:list = statups 
         return
     
 

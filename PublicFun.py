@@ -86,8 +86,11 @@ def xml_is_element(skill_element:ET.Element, element:str) -> bool:
 
 def xml_get_element_item(skill_element:ET.Element, element:str) -> ET.Element:
     
-    item:ET.Element = None
+    query_element = element.split('/')
+    if query_element[0] == "..":
+        return 
 
+    item:ET.Element = None 
     for node in skill_element.iter():
         if node.attrib.get("name") == element:
             item = node

@@ -13,6 +13,8 @@ from WZ.Skills.Job.XinShou import *
 from WZ.Skills.Job.ZhanShen import *
 from WZ.Skills.Job.ZhanShi import *  
 from WZ.Skills.Skill import *
+from WZ.Skills.StatEffect import *
+
  
 class SkillFactory:
     def __init__(self):
@@ -313,12 +315,20 @@ class SkillFactory:
             else:
                 pass
 
-            # skill_element
-            skill_ret.m_stat_effect.append()
+            for it in skill_element: 
+                print("[SkillFactory:]", it.tag, it.attrib, it.text)
+                if it.attrib.get('name') == 'level':
+                    skill_ret.m_stat_effect.append(StatEffect(it, id, True, is_buffer))
+
+            skill_ret.set_animation_time(0)
+
+            if effect_item != None:
+                for it in effect_item:
+                    skill_ret.inc_animation_time(xml_get_element_to_int(it, "delay", 0))
 
             pass # else
         
-        return
+        return skill_ret
 
 
 g_SkillFactory:SkillFactory = None 
