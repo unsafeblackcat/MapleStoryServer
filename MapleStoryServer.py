@@ -6,6 +6,7 @@ from MySQLdb.MapleStroyDB import *
 from Socket.SocketLogin import SocketLogin
 from Socket.SocketChannel import SocketChannel
 from WZ.Skills.SkillFactory import * 
+from WZ.Cash.CashItemFactory import *
  
 async def socket_wait():
     socket_login = SocketLogin("127.0.0.1", 8484, 10)  
@@ -26,10 +27,11 @@ async def socket_wait():
 
     pass
   
-def main(argc, argv):    
- 
+def main(argc, argv):       
     get_skill_factory().init()
-
+    get_cash_item_factory().init()
+    # set_dbg()
+    
     maplestory_config = get_MapleStoryConfig()
 
     maplestroy_db = MapleStroyDB(

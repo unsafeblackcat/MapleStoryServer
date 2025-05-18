@@ -25,9 +25,9 @@ class WZFile:
     def get_file_path(self) -> str:
         ret:str = "" 
         wzpath:str = os.getcwd() + "/Resources/wz/" + self.m_file_name
-        langpath = os.getcwd() + "/Resources/wz-" + get_language() + self.m_file_name + "/"
+        langpath = os.getcwd() + "/Resources/wz-" + get_language() + "/" + self.m_file_name
 
-        if is_file_exist(langpath):
+        if is_dir_exist(langpath):
             ret = langpath
         else: 
             ret = wzpath

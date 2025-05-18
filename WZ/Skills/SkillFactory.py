@@ -39,7 +39,7 @@ class SkillFactory:
             tree = ET.parse(it)
             root = tree.getroot()
             for child in root:
-                print(child.tag, child.attrib, child.text)
+                dbg_print(child.tag, child.attrib, child.text)
                 if (child.tag == 'imgdir' and child.attrib.get('name') == 'skill'):
                     for skill_element in child:
                         skillid = int(skill_element.get('name'))  
@@ -316,7 +316,7 @@ class SkillFactory:
                 pass
 
             for it in skill_element: 
-                print("[SkillFactory:]", it.tag, it.attrib, it.text)
+                dbg_print("[SkillFactory:]", it.tag, it.attrib, it.text)
                 if it.attrib.get('name') == 'level':
                     skill_ret.m_stat_effect.append(StatEffect(it, id, True, is_buffer))
 

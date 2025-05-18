@@ -83,7 +83,7 @@ class StatEffect:
         self.m_repeat_effect:int = xml_get_element_to_int(element_item, "repeatEffect")
         
         mdd:ET.Element = xml_get_element_item(element_item, "0")
-        if mdd != None:
+        if mdd != None and len(mdd) > 0:
             self.m_mob_skill:int = xml_get_element_to_int(mdd, "mobSkill", 0)
             self.m_level:int = xml_get_element_to_int(mdd, "level", 0)
             self.m_target:int = xml_get_element_to_int(mdd, "target", 0)
@@ -95,7 +95,8 @@ class StatEffect:
             pass
             
         mdds:ET.Element = xml_get_element_item(element_item, "mob")
-        if mdds != None:
+        if mdds != None and len(mdds) > 0:
+            self.m_mob:int = xml_get_element_to_int(mdds, "mob")
             pass
 
         self.m_sourceid = id
@@ -665,10 +666,10 @@ class StatEffect:
             pass # if is_skill:
 
         if self.is_morph():
-            statups.append(dict(BuffStat.MORPH,  self.get_morph()))
+            statups.append({BuffStat.MORPH,  self.get_morph()})
             
         if self.m_ghost > 0 and is_skill == False:
-            statups.append(dict(BuffStat.GHOST_MORPH,  self.m_ghost)) 
+            statups.append({BuffStat.GHOST_MORPH,  self.m_ghost}) 
         
         self.m_monsterStatus:dict = monsterStatus
         self.m_statups:list = statups 
@@ -677,7 +678,7 @@ class StatEffect:
 
     def add_buff_statPair_to_list_if_not_zero(self, statups:list, buffstat:BuffStat, val:int) -> None:
         if val != 0:
-            statups.append(dict(buffstat, val)) 
+            statups.append({buffstat.get_value(), val}) 
 
 
     def map_protection(self, sourceid:int) -> int: 
